@@ -1,0 +1,31 @@
+
+FC = gfortran
+FFLAGS1 = -O3 -march=native -fPIC -funroll-loops -fopenmp
+FFLAGS2 = -O3 -march=native -fPIC -funroll-loops -fdefault-integer-8 -finteger-4-integer-8 -fopenmp
+FFLAGS3 = -O3 -march=native -fPIC -funroll-loops -fdefault-integer-8 -finteger-4-integer-8 -fopenmp
+
+FFLAGS=${FFLAGS2}
+export FFL=${FFLAGS}
+
+OBJS = src/besseljs3d.o src/dfft.o src/dlaran.o src/fmmcommon.o \
+	src/h3dcommon.o src/h3dtrans.o \
+	src/helmrouts3d.o src/hkrand.o \
+	src/h3dterms.o src/legeexps.o \
+	src/projections.o src/rotproj.o \
+	src/rotviarecur.o src/yrecursion.o src/prini.o \
+	src/helmkernels.o
+
+
+default: test
+
+test: $(OBJS)
+	$(FC) $(FFLAGS) src/test_helmrouts3d.f $(OBJS) -o int2
+	./int2
+	rm src/*.o
+	rm int2
+
+	
+	
+%.o: %.f %.h 
+	$(FC) -c $(FFLAGS) $< -o $@
+
